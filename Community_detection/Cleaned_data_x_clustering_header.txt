@@ -1,0 +1,1 @@
+User_IP,Access_date,Topic,Escenic_ID,Date_only,publishDate,userNeeds_clean,Combination

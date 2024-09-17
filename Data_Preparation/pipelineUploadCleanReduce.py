@@ -9,14 +9,20 @@ import datetime
 #pandarallel.initialize(progress_bar=True)
 
 #We need to specifiy which log file we want to upload and its path
-df_rts_dd = dd.read_csv('C:/Users/laura.finarell/OneDrive - HESSO/Polarizzazione/rts_accesslogs/www.rts.ch_accesslogs_2023-03.0/www.rts.ch_accesslogs.log',sep = ' ', header = None,)
+#This is good for march
+#df_rts_dd = dd.read_csv('C:/Users/laura.finarell/OneDrive - HESSO/Polarizzazione/rts_accesslogs/www.rts.ch_accesslogs_2023-03.0/www.rts.ch_accesslogs.log',sep = ' ', header = None,)
+
+#Follow this procedure for april and may since the logs have a different format
+df_rts_dd = pd.read_csv('C:/Users/laura.finarell/OneDrive - HESSO/Polarizzazione/rts_accesslogs/logs_april.csv',sep = ',', header = None,)
+
 print('Step 1: Uploaded log file')
 
 
-df_rts = df_rts_dd.compute()
+#df_rts = df_rts_dd.compute()
 print('Step 2: Convert dask df into pandas df')
 print('Shape')
 print(df_rts.shape)
+print(df_rts)
 
 df_rts = df_rts.drop([0,1,3,5,6,7,8,10,11,12,13,14,16,17,18],axis = 1)
 print('Step 3: Useless columns deleted')
@@ -74,30 +80,37 @@ df_rts_html = df_rts[df_rts.index.isin(index_html)]
 df_rts_html.reset_index(inplace=True, drop=True)
 print('.html extracted')
 
-topics = {'culture': r'culture',
-          'economie': r'economie',
-          'suisse': r'suisse',
-          'monde': r'monde',
-          'sciences-tech': r'sciences-tech',
-          'sport': r'sport',
-          'environnement' : r'environnement'}
+topics = {
+    'culture': r'/culture/',
+    'economie': r'/economie/',
+    'suisse': r'/suisse/',
+    'monde': r'/monde/',
+    'sciences-tech': r'/sciences-tech/',
+    'sport': r'/sport/',
+    'environnement': r'/environnement/'
+}
 
 def extract_topic_and_id(url):
     if pd.isna(url):
         return 'other', None
+
+    # Extract the Escenic ID regardless of the topic
+    escenic_id_match = re.search(r'/(\d+)-\S+', url)
+    escenic_id = escenic_id_match.group(1) if escenic_id_match else None
+
+    # Check for topic matches
     for topic, pattern in topics.items():
         if re.search(pattern, url):
-            escenic_id_match = re.search(r'/(\d+)-', url)
-            escenic_id = escenic_id_match.group(1) if escenic_id_match else None
             return topic, escenic_id
-    return 'other', None  # If no topic matches, return 'other' and None for Escenic ID
 
+    return 'other', escenic_id  # Return 'other' and the extracted Escenic ID if no topic matches
+   
 # Apply the function to extract the topic and Escenic ID
 df_rts_html[['Topic', 'Escenic_ID']] = df_rts_html['Url'].apply(lambda x: pd.Series(extract_topic_and_id(x)))
 
 print('df shape')
 print(df_rts_html.shape)
-df_rts_html.to_csv('Code_Laura/Reduced_logs/rts_cleaned_0.csv') 
+df_rts_html.to_csv('Code_Laura/Reduced_logs/rts_cleaned_5.csv') 
 
 '''
 start_indexes = []
