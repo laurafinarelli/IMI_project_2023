@@ -26,12 +26,12 @@ def reverse_label_encoding(encoded_values, encoder):
 #original_ips = reverse_label_encoding(df_rts_temp['User_IP_Code'], user_ip_encoder)
 #original_combinations = reverse_label_encoding(df_rts_temp['Combination_Code'], combination_encoder)
 
-def read_csv_and_return_variables():
+def read_csv_and_return_variables(common_threshold):
     print("Lecture du CSV...")
     start_time = time.time()
     
     # Optimize memory usage
-    df_rts_temp_intermediate = pd.read_csv('pipeline/Cleaned_data_x_clustering_NEW.csv')#, dtype=dtypes)#,nrows=1000 FOR DEBUG
+    df_rts_temp_intermediate = pd.read_csv('Cleaned_data_x_clustering_NEW.csv')#, dtype=dtypes)#,nrows=1000 FOR DEBUG
     df_rts_temp_intermediate = df_rts_temp_intermediate.drop_duplicates()
     
         # Group by User_IP and Combination
@@ -154,7 +154,7 @@ def create_graph_from_user_user_matrix(user_user_matrix, threshold):
     edge_list = [(rows[i], cols[i]) for i in range(len(rows))]
     g.add_edges(edge_list)
     g.es['weight'] = weights
-    g.write_graphml("user_user_graph.graphml")
+    #g.write_graphml("user_user_graph.graphml")
     print(f"Number of edges after applying threshold of {threshold}: {len(g.es)}")
     
     return g
@@ -224,7 +224,7 @@ def save_leiden_communities(leiden_communities, filename='leiden_communities.jso
     print(f"Leiden communities saved to {filename}")
 
 def main():
-    df_rts, ips, combos, user_ip_encoder, combination_encoder = read_csv_and_return_variables()
+    df_rts, ips, combos, user_ip_encoder, combination_encoder = read_csv_and_return_variables(8000)
 
     user_combo_scaled_sparse = create_sparse_matrix(df_rts)
     user_user_matrix = tfidf_weighted_cosine_similarity(user_combo_scaled_sparse)

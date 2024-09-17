@@ -27,7 +27,7 @@ def extract_combinations_for_communities(leiden_membership, df_rts_temp, user_ip
         combinations_in_community = df_rts_temp[df_rts_temp['User_IP_Code'].isin(community_nodes)]['Combination_Code']
         
         # Count the occurrences of each combination and get the top 4
-        top_combinations = combinations_in_community.value_counts().head(4).index
+        top_combinations = combinations_in_community.value_counts().head(10).index
         
         # Decode combinations
         original_combinations_in_community = reverse_label_encoding(top_combinations, combination_encoder)
@@ -35,10 +35,10 @@ def extract_combinations_for_communities(leiden_membership, df_rts_temp, user_ip
         # Save the top 4 combinations for this community
         communities_combinations[community_id] = original_combinations_in_community.tolist()  # Convert numpy arrays to lists
 
-    output_file = 'Community_top4_features.json'
+    output_file = 'Community_top10_features.json'
     with open(output_file, 'w') as f:
         json.dump(communities_combinations, f, indent=4)
-    print(f"Top 4 combinations for each community saved to {output_file}")
+    print(f"Top 10 combinations for each community saved to {output_file}")
     
     return communities_combinations
 
@@ -73,7 +73,7 @@ def visualize_community_connections(partition_list, user_user_matrix, threshold=
     return communitiesNetwork
 
 def main():
-    df_rts, ips, combos, user_ip_encoder, combination_encoder = read_csv_and_return_variables()
+    df_rts, ips, combos, user_ip_encoder, combination_encoder = read_csv_and_return_variables(0)
     user_combo_scaled_sparse = create_sparse_matrix(df_rts)
     user_user_matrix = tfidf_weighted_cosine_similarity(user_combo_scaled_sparse)
     print(f"User user matrix created")
@@ -81,15 +81,15 @@ def main():
     g = create_graph_from_user_user_matrix(sp.csr_matrix(user_user_matrix), threshold)
     
     print("Loading Leiden communities from file...")
-    leiden_partition = pd.read_csv('leiden_communities.csv')
+    leiden_partition = pd.read_csv('Community_detection/leiden_communities.csv')
     leiden_membership = leiden_partition['community_id'].values
     print(f"Leiden communities: {len(set(leiden_membership))}")
     
     # Extract combinations for each community
-    #communities_combinations = extract_combinations_for_communities(leiden_membership, df_rts, user_ip_encoder, combination_encoder)
+    communities_combinations = extract_combinations_for_communities(leiden_membership, df_rts, user_ip_encoder, combination_encoder)
     #print(communities_combinations)
-    partition_list = leiden_partition.groupby('community_id')['user_id'].apply(list).tolist()
-    visualize_community_connections(partition_list, user_user_matrix,threshold=0.8)
+    #partition_list = leiden_partition.groupby('community_id')['user_id'].apply(list).tolist()
+    #visualize_community_connections(partition_list, user_user_matrix,threshold=0.8)
 
 if __name__ == "__main__":
     main()
