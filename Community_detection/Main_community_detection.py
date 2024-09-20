@@ -29,38 +29,38 @@ def reverse_label_encoding(encoded_values, encoder):
 def read_csv_and_return_variables(common_threshold):
     print("Lecture du CSV...")
     start_time = time.time()
-    
-    # Optimize memory usage
+
     df_rts_temp_intermediate = pd.read_csv('Cleaned_data_x_clustering_NEW.csv')#, dtype=dtypes)#,nrows=1000 FOR DEBUG
     df_rts_temp_intermediate = df_rts_temp_intermediate.drop_duplicates()
     
-        # Group by User_IP and Combination
+    # Group by User_IP and Combination
     df_rts_temp = df_rts_temp_intermediate.groupby(['User_IP', 'Combination']).size().reset_index()
     df_rts_temp = df_rts_temp.rename(columns={0: 'Connections'})
     df_rts_temp['Connections'] = df_rts_temp['Connections'].astype(np.int32)
     #df_rts_temp = df_rts_temp[df_rts_temp['Connections'] > 1]
     #df_rts_temp = df_rts_temp.reset_index(drop=True)
+
     combination_counts = df_rts_temp['Combination'].value_counts()
     print(combination_counts)
+    
 
 # Set a threshold to filter out very common combinations
-    common_threshold = 8000  # Example threshold, adjust based on your data
+    common_threshold = common_threshold  
     common_combinations = combination_counts[combination_counts > common_threshold].index
+    print(common_combinations)
     #print(len(common_combinations))
     #df_rts_temp['Connections'] = df_rts_temp['Connections'].apply(lambda x: 1 if x > 0 else 0).astype(np.int32)
     #df_rts_temp = df_rts_temp[df_rts_temp['Connections'] > 1]
     #df_rts_temp = df_rts_temp.reset_index(drop=True)
     df_rts_temp = df_rts_temp[~df_rts_temp['Combination'].isin(common_combinations)]
-
-    #df_rts_temp = df_rts_temp[df_rts_temp['Connections'] > 1]
-    #df_rts_temp = df_rts_temp.reset_index(drop=True)
+    
     user_ip_encoder = LabelEncoder()
     combination_encoder = LabelEncoder()
 
     # Fit and transform the data
     df_rts_temp['User_IP_Code'] = user_ip_encoder.fit_transform(df_rts_temp['User_IP']).astype(np.int32)
     df_rts_temp['Combination_Code'] = combination_encoder.fit_transform(df_rts_temp['Combination']).astype(np.int32)
-
+    df_rts_temp.reset_index(drop=True, inplace=True)
     ips_temp = user_ip_encoder.classes_
     comb_temp = combination_encoder.classes_
 
@@ -69,7 +69,7 @@ def read_csv_and_return_variables(common_threshold):
     print(f"Nombre de Combination uniques: {len(comb_temp)}")
     print(f"Lecture du CSV terminée en {time.time() - start_time:.2f} secondes.")
     
-    return df_rts_temp, ips_temp, comb_temp,user_ip_encoder, combination_encoder
+    return df_rts_temp, ips_temp, comb_temp,user_ip_encoder, combination_encoder, common_combinations
 
 def create_sparse_matrix(df_rts_temp):
     # Create user-combination matrix
@@ -80,27 +80,7 @@ def create_sparse_matrix(df_rts_temp):
         (df_rts_temp['Connections'], (df_rts_temp['User_IP_Code'], df_rts_temp['Combination_Code'])),
         shape=(num_users, num_combinations)
     )
-    #df_nonzero = pd.DataFrame({
-    #    'User': user_combo_matrix.row,
-    #    'Combo': user_combo_matrix.col,
-     #   'Connection': user_combo_matrix.data
-    #})
     
-    # Save the DataFrame to an Excel file
-    #df_nonzero.to_excel('user_combo_matrix.xlsx', index=False)
-    
-    # Convert the sparse matrix to a dense format
-    #user_combo_dense = user_combo_matrix.toarray()
-    
-    # Initialize the Min-Max scaler
-    #scaler = MinMaxScaler()
-    
-    # Apply Min-Max scaling to each row
-    #user_combo_scaled_dense = scaler.fit_transform(user_combo_dense)
-    
-    # Convert back to sparse matrix format
-    #user_combo_scaled_sparse = sp.csr_matrix(user_combo_scaled_dense)
-    #print(user_combo_matrix)
     return user_combo_matrix
 
 def tfidf_weighted_cosine_similarity(user_combo_matrix):
@@ -224,7 +204,7 @@ def save_leiden_communities(leiden_communities, filename='leiden_communities.jso
     print(f"Leiden communities saved to {filename}")
 
 def main():
-    df_rts, ips, combos, user_ip_encoder, combination_encoder = read_csv_and_return_variables(8000)
+    df_rts, ips, combos, user_ip_encoder, combination_encoder,common_combinations = read_csv_and_return_variables(8000)
 
     user_combo_scaled_sparse = create_sparse_matrix(df_rts)
     user_user_matrix = tfidf_weighted_cosine_similarity(user_combo_scaled_sparse)

@@ -23,26 +23,28 @@ def extract_combinations_for_communities(leiden_membership, df_rts_temp, user_ip
         # Find the users in this community
         community_nodes = df_rts_temp[df_rts_temp['User_IP_Code'].isin(leiden_membership[leiden_membership == community_id].index)]['User_IP_Code']
         
-        # Get combinations for these users
-        combinations_in_community = df_rts_temp[df_rts_temp['User_IP_Code'].isin(community_nodes)]['Combination_Code']
-        
-        # Count the occurrences of each combination and get the top 4
-        top_combinations = combinations_in_community.value_counts().head(10).index
-        
-        # Decode combinations
+        community_combinations = df_rts_temp[df_rts_temp['User_IP_Code'].isin(community_nodes)][['Combination_Code', 'Connections']]
+    
+    # Sum the connections for each combination
+        summed_combinations = community_combinations.groupby('Combination_Code')['Connections'].sum().reset_index()
+    
+    # Sort by summed connections and get the top 4 combinations
+        top_combinations = summed_combinations.sort_values(by='Connections', ascending=False).head(4)['Combination_Code']
+    
+    # Decode combinations
         original_combinations_in_community = reverse_label_encoding(top_combinations, combination_encoder)
-        
-        # Save the top 4 combinations for this community
-        communities_combinations[community_id] = original_combinations_in_community.tolist()  # Convert numpy arrays to lists
+    
+    # Save the top 4 combinations for this community
+        communities_combinations[community_id] = original_combinations_in_community.tolist()
 
-    output_file = 'Community_top10_features.json'
+    output_file = 'Community_top4_features.json'
     with open(output_file, 'w') as f:
         json.dump(communities_combinations, f, indent=4)
-    print(f"Top 10 combinations for each community saved to {output_file}")
+    print(f"Top 4 combinations for each community saved to {output_file}")
     
     return communities_combinations
 
-def visualize_community_connections(partition_list, user_user_matrix, threshold=0.8):
+def visualize_community_connections(partition_list, user_user_matrix,produce_graph, threshold):
     # Create a new graph where each node represents a community
     communitiesNetwork = nx.Graph()
     
@@ -69,11 +71,12 @@ def visualize_community_connections(partition_list, user_user_matrix, threshold=
                     communitiesNetwork.add_edge(i, j, weight=normalized_weight)
     
     # Optionally save or return the graph
-    nx.write_gexf(communitiesNetwork, 'community_graph.gexf')
+    if produce_graph == 1:
+        nx.write_gexf(communitiesNetwork, 'community_graph_new.gexf')
     return communitiesNetwork
 
 def main():
-    df_rts, ips, combos, user_ip_encoder, combination_encoder = read_csv_and_return_variables(0)
+    df_rts, ips, combos, user_ip_encoder, combination_encoder,_ = read_csv_and_return_variables(8000)
     user_combo_scaled_sparse = create_sparse_matrix(df_rts)
     user_user_matrix = tfidf_weighted_cosine_similarity(user_combo_scaled_sparse)
     print(f"User user matrix created")
@@ -89,7 +92,7 @@ def main():
     communities_combinations = extract_combinations_for_communities(leiden_membership, df_rts, user_ip_encoder, combination_encoder)
     #print(communities_combinations)
     #partition_list = leiden_partition.groupby('community_id')['user_id'].apply(list).tolist()
-    #visualize_community_connections(partition_list, user_user_matrix,threshold=0.8)
+    #visualize_community_connections(partition_list, user_user_matrix,1,0.8)
 
 if __name__ == "__main__":
     main()

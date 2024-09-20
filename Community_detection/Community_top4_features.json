@@ -1,0 +1,98 @@
+{
+    "0": [
+        "culture INSPIRE",
+        "suisse INSPIRE",
+        "monde DIVERT",
+        "culture EDUCATE"
+    ],
+    "1": [
+        "sciences-tech INSPIRE",
+        "monde DIVERT",
+        "monde TREND",
+        "culture INSPIRE"
+    ],
+    "2": [
+        "culture INSPIRE",
+        "culture EDUCATE",
+        "monde TREND",
+        "sciences-tech INSPIRE"
+    ],
+    "3": [
+        "economie TREND",
+        "monde DIVERT",
+        "monde TREND",
+        "culture INSPIRE"
+    ],
+    "4": [
+        "sciences-tech TREND",
+        "monde DIVERT",
+        "monde TREND",
+        "culture INSPIRE"
+    ],
+    "5": [
+        "sciences-tech DIVERT",
+        "monde DIVERT",
+        "monde TREND",
+        "sciences-tech INSPIRE"
+    ],
+    "6": [
+        "monde DIVERT",
+        "monde TREND",
+        "culture INSPIRE",
+        "sciences-tech INSPIRE"
+    ],
+    "7": [
+        "suisse DIVERT",
+        "monde DIVERT",
+        "culture EDUCATE",
+        "sciences-tech INSPIRE"
+    ],
+    "8": [
+        "culture EDUCATE",
+        "monde DIVERT",
+        "monde TREND",
+        "culture INSPIRE"
+    ],
+    "9": [
+        "monde TREND",
+        "monde DIVERT",
+        "culture INSPIRE",
+        "culture EDUCATE"
+    ],
+    "10": [
+        "monde INSPIRE",
+        "monde DIVERT",
+        "monde TREND",
+        "culture INSPIRE"
+    ],
+    "11": [
+        "culture TREND",
+        "monde DIVERT",
+        "monde TREND",
+        "culture EDUCATE"
+    ],
+    "12": [
+        "monde DIVERT",
+        "monde TREND",
+        "culture INSPIRE",
+        "sciences-tech TREND"
+    ],
+    "13": [
+        "culture INSPIRE",
+        "monde DIVERT",
+        "monde TREND",
+        "culture EDUCATE"
+    ],
+    "14": [
+        "sport UPDATE",
+        "culture INSPIRE",
+        "suisse INSPIRE",
+        "culture EDUCATE"
+    ],
+    "15": [
+        "culture INSPIRE",
+        "economie INSPIRE",
+        "monde DIVERT",
+        "culture EDUCATE"
+    ]
+}
