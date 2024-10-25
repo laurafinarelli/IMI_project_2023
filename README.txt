@@ -1,15 +1,31 @@
-git folder for the IMI project: 'Stimuler la découverte de contenus pour renforcer les espaces d’information démocratiques'
+**Stimuler la découverte de contenus pour renforcer les espaces d’information démocratiques**
 
-Data_Preparation folder:
+This project aims to deepen the understanding of news consumption patterns by analyzing the topics and user needs of articles visited by users. The data utilized includes real articles and logs from the french Swiss public media service RTS (https://www.rts.ch/), enabling the development of a recommendation and nudging system tailored to the needs of democratic news spaces.
 
-1. pipelineUploadCleanReduce.py to upload, filter and reduce the logs files with only the logs about articles.
-This passage must be done for each log file.
+**Objective**
+The main objective is to create a more precise recommendation system that aligns with ethical standards, reinforcing democratic information spaces. This goal is pursued by categorizing users based on their interactions with various article topics and user needs. 
+For additional information on the user needs classification used, see [SmartOcto research on user needs](https://smartocto.com/research/userneeds/).
 
-2. join_log_article.ipynb will join all the cleaned logs into one file 'logs_cleaned_all.csv' + will merge them with the article dataset
-into a new file 'Dataset_Users_Articles_all.csv'
+**Nudging Framework**
+Three types of nudging strategies are implemented, each with a foundation in ethical considerations surrounding their legitimacy and purpose.
 
-Articles folder:
+**Technical Summary**
+Data Handling:
 
-script to open the article file and .csv and .xlsx file. 
+Data from articles and user logs is uploaded, cleaned, and preprocessed.
+Article data includes two primary features: Topic and User Need, as defined by RTS.
 
+Community Detection:
+
+Users are grouped into communities based on the frequency of (topic, user need) pairs associated with each visited article.
+Given the sparsity of the dataset, classical clustering methods were not effective; instead, graph-theoretical techniques are applied.
+Different community detection algorithms are evaluated using conductance and modularity metrics to determine the most meaningful user groupings.
+
+Nudging Implementation:
+
+After community detection, users are assigned to specific communities, and nudging strategies are applied based on these groupings.
+Refer to the Demo folder for a sample nudging implementation.
+
+
+The data is not included in this repository for privacy reasons. However, further insights on the methodology and analysis can be found in the accompanying paper (in progress).
 
