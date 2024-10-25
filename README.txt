@@ -9,5 +9,5 @@ into a new file 'Dataset_Users_Articles_all.csv'
 Articles folder:
 
 script to open the article file and .csv and .xlsx file. 
-There is also an improved version of the file with the field UserNeeds cleaned and ready to use.
+
 
