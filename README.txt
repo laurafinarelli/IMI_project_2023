@@ -1,3 +1,5 @@
+git folder for the IMI project: 'Stimuler la découverte de contenus pour renforcer les espaces d’information démocratiques'
+
 Data_Preparation folder:
 
 1. pipelineUploadCleanReduce.py to upload, filter and reduce the logs files with only the logs about articles.
