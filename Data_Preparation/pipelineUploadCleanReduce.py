@@ -10,10 +10,9 @@ import datetime
 
 #We need to specifiy which log file we want to upload and its path
 #This is good for march
-#df_rts_dd = dd.read_csv('C:/Users/laura.finarell/OneDrive - HESSO/Polarizzazione/rts_accesslogs/www.rts.ch_accesslogs_2023-03.0/www.rts.ch_accesslogs.log',sep = ' ', header = None,)
 
 #Follow this procedure for april and may since the logs have a different format
-df_rts_dd = pd.read_csv('C:/Users/laura.finarell/OneDrive - HESSO/Polarizzazione/rts_accesslogs/logs_april.csv',sep = ',', header = None,)
+df_rts_dd = pd.read_csv('/logs_april.csv',sep = ',', header = None,)
 
 print('Step 1: Uploaded log file')
 
@@ -110,7 +109,7 @@ df_rts_html[['Topic', 'Escenic_ID']] = df_rts_html['Url'].apply(lambda x: pd.Ser
 
 print('df shape')
 print(df_rts_html.shape)
-df_rts_html.to_csv('Code_Laura/Reduced_logs/rts_cleaned_5.csv') 
+df_rts_html.to_csv('/Reduced_logs/rts_cleaned_5.csv') 
 
 '''
 start_indexes = []
