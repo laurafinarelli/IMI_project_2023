@@ -31,7 +31,7 @@ def read_csv_and_return_variables():
     start_time = time.time()
     
     # Optimize memory usage
-    df_rts_temp_intermediate = pd.read_csv('pipeline/Cleaned_data_x_clustering_NEW.csv')#, dtype=dtypes)#,nrows=1000 FOR DEBUG
+    df_rts_temp_intermediate = pd.read_csv('/Cleaned_data_x_clustering_NEW.csv')#, dtype=dtypes)#,nrows=1000 FOR DEBUG
     df_rts_temp_intermediate = df_rts_temp_intermediate.drop_duplicates()
     
         # Group by User_IP and Topic
